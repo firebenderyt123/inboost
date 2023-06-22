@@ -1,0 +1,8 @@
+.react-flow__node {
+  width: auto;
+}
+
+.react-flow__node .multi-input {
+  width: max-content;
+  max-width: 170px;
+}
