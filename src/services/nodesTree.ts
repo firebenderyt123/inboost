@@ -2,11 +2,10 @@ import { NODES_TREE_SLEEP, UPDATE_NODES_TREE } from '../store/constants/nodesTre
 import { AppDispatch } from '../store';
 import { Node } from '../types/Node';
 
-export const updateNodesTree = ({ id, parent, data, child }: Node) => {
+export const updateNodesTree = ({ id, data, child }: Node) => {
   return async (dispatch: AppDispatch) => {
     const newNode = {
       id,
-      parent,
       data,
       child,
     };

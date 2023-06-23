@@ -5,7 +5,7 @@ import { Node as NodeType } from '../../types/Node';
 import { NodeData } from '../../types/NodeData';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { selectRootNode, selectChangedNode } from '../../store/selectors/nodesTree';
+import { selectRootNode } from '../../store/selectors/nodesTree';
 import { updateNodesTree } from '../../services/nodesTree';
 
 import { getNode, getParentValues } from '../../utils/nodesTree';
@@ -19,18 +19,18 @@ type NodePropsType = {
 };
 
 function Node({ data: nodeData }: NodePropsType) {
-  const { id, parent, data, child } = nodeData;
+  const { id, data, child } = nodeData;
 
   const [values, setValues] = useState<NodeData[]>(data);
 
   const dispatch = useAppDispatch();
   const rootNode = useAppSelector(selectRootNode);
-  const changedNode = useAppSelector(selectChangedNode);
 
   const options: NodeData[] = useMemo(
     () =>
       Array.from({ length: TOTAL_OPTIONS }, (_, index) => {
         return {
+          id,
           value: `option-${id}-${index + 1}`,
           label: `Варіант ${index + 1}`,
         };
@@ -40,14 +40,14 @@ function Node({ data: nodeData }: NodePropsType) {
 
   const updateNodes = useCallback(
     (data: NodeData[]) => {
-      dispatch(updateNodesTree({ id, parent, data, child }));
+      dispatch(updateNodesTree({ id, data, child }));
     },
     [dispatch, id, child],
   );
 
   const onChange = useCallback(
     (selectedOpts: NodeData[]) => {
-      updateNodes(selectedOpts);
+      updateNodes(selectedOpts.filter((opt) => opt.id === id));
     },
     [rootNode],
   );
@@ -57,15 +57,15 @@ function Node({ data: nodeData }: NodePropsType) {
   }, []);
 
   useEffect(() => {
-    if (changedNode && rootNode) {
+    if (rootNode) {
       const node = getNode(rootNode, id);
 
       if (node) {
-        const newValues = getParentValues(node, changedNode);
+        const newValues = getParentValues(rootNode, node);
         setValues(newValues);
       }
     }
-  }, [changedNode, rootNode]);
+  }, [rootNode]);
 
   return (
     <React.Fragment>

@@ -6,9 +6,9 @@ export const getNode = (rootNode: Node, id: string): Node | null => {
   return rootNode.child ? getNode(rootNode.child, id) : null;
 };
 
-export const getParentValues = (currentNode: Node, changedNode: Node): NodeData[] => {
-  if (currentNode.id === changedNode.id) return [...changedNode.data];
-  return currentNode.parent
-    ? [...getParentValues(currentNode.parent, changedNode), ...currentNode.data]
-    : [];
+export const getParentValues = (rootNode: Node, currentNode: Node): NodeData[] => {
+  if (rootNode.id === currentNode.id) return [...rootNode.data];
+  return rootNode.child
+    ? [...rootNode.data, ...getParentValues(rootNode.child, currentNode)]
+    : [...rootNode.data];
 };
