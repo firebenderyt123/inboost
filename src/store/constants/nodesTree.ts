@@ -1,0 +1,2 @@
+export const UPDATE_NODES_TREE = 'UPDATE_NODES_TREE';
+export const NODES_TREE_SLEEP = 'NODES_TREE_SLEEP';
