@@ -40,7 +40,6 @@ function Node({ data: nodeData }: NodePropsType) {
 
   const updateNodes = useCallback(
     (data: NodeData[]) => {
-      console.log('data', data);
       dispatch(updateNodesTree({ id, parent, data, child }));
     },
     [dispatch, id, child],
@@ -49,14 +48,12 @@ function Node({ data: nodeData }: NodePropsType) {
   const onChange = useCallback(
     (selectedOpts: NodeData[]) => {
       updateNodes(selectedOpts);
-      console.log('onChange', selectedOpts, rootNode);
     },
     [rootNode],
   );
 
   useEffect(() => {
     updateNodes(data);
-    console.log('Node.ts', nodeData);
   }, []);
 
   useEffect(() => {

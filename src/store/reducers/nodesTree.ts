@@ -35,7 +35,6 @@ export default function nodesTreeReducer(
 
       const updateNode = (node: Node, newNode: Node): Node => {
         if (node.id === newNode.id) {
-          console.log('update', node, newNode);
           return {
             ...node,
             data: newNode.data,

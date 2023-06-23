@@ -10,7 +10,6 @@ export const updateNodesTree = ({ id, parent, data, child }: Node) => {
       data,
       child,
     };
-    console.log('Service', newNode);
     dispatch({ type: UPDATE_NODES_TREE, node: newNode });
     dispatch({ type: NODES_TREE_SLEEP });
   };
