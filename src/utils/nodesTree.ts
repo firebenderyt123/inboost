@@ -10,5 +10,5 @@ export const getParentValues = (currentNode: Node, changedNode: Node): NodeData[
   if (currentNode.id === changedNode.id) return [...changedNode.data];
   return currentNode.parent
     ? [...getParentValues(currentNode.parent, changedNode), ...currentNode.data]
-    : [];
+    : [...currentNode.data];
 };
