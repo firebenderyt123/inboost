@@ -2,6 +2,7 @@ import { NodeData } from './NodeData';
 
 export type Node = {
   id: string;
+  parent: Node | null;
   data: NodeData[];
-  childId: string | null;
+  child: Node | null;
 };

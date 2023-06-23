@@ -14,7 +14,7 @@ import { Node as NodeType } from './types/Node';
 import { NodeData } from './types/NodeData';
 
 import { useAppSelector } from './hooks/redux';
-import { selectLastChangedNode } from './store/selectors/nodesTree';
+import { selectChangedNode, selectRootNode } from './store/selectors/nodesTree';
 
 const INIT_TOTAL_NODES = 4;
 
@@ -38,8 +38,9 @@ const initialNodes: initialNodeType[] = Array.from({ length: INIT_TOTAL_NODES },
     position: { x: 200 * index, y: 100 * index },
     data: {
       id: `n${index + 1}`,
+      parent: null,
       data: [],
-      childId: index + 1 < INIT_TOTAL_NODES ? `n${index + 2}` : null,
+      child: null,
     },
     type: 'input',
   };
@@ -51,39 +52,41 @@ const initialEdges = Array.from({ length: INIT_TOTAL_NODES - 1 }, (_, index) => 
   target: `n${index + 2}`,
 }));
 
-const newNodes = (
-  nodes: initialNodeType[],
-  node: initialNodeType,
-  changedNode: NodeType,
-): initialNodeType[] => {
-  console.log('newNodes', node.id, node, changedNode, nodes);
-  if (changedNode.id !== node.id) node.data.data = [...changedNode.data, ...node.data.data];
-  else node.data.data = [...changedNode.data];
-  nodes = [...nodes.filter((n) => n.id !== node.id), node];
-  const nextNode = nodes.find((n) => n.id === node.data.childId);
-  if (!nextNode) return nodes;
-  return newNodes(nodes, nextNode, node.data);
-};
+/// ???????
+// const newNodes = (
+//   nodes: initialNodeType[],
+//   changedNode: NodeType,
+//   parentData: NodeData[],
+// ): initialNodeType[] => {
+//   const node = nodes.find((n) => n.id === changedNode.id);
+//   if (!node) return nodes;
+//   const newData = [...parentData, ...node.data.data];
+//   const uniqueData = Array.from(
+//     newData
+//       .reduce((map, obj) => {
+//         map.set(obj.label, obj);
+//         return map;
+//       }, new Map())
+//       .values(),
+//   );
+//   node.data.data = [...uniqueData];
+//   console.log('newNodes', parentData, changedNode, nodes);
+//   return node.data.child ? newNodes(nodes, node.data.child, node.data.data) : nodes;
+// };
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const lastChangedNode = useAppSelector(selectLastChangedNode);
+  const rootNode = useAppSelector(selectRootNode);
+  const changedNode = useAppSelector(selectChangedNode);
 
-  useEffect(() => {
-    if (lastChangedNode !== null) {
-      setNodes((prev) =>
-        newNodes(
-          prev as initialNodeType[],
-          prev.find((nds) => nds.id === lastChangedNode.id) as initialNodeType,
-          lastChangedNode,
-        ),
-      );
-    }
-  }, [lastChangedNode]);
-
-  console.log(nodes, lastChangedNode);
+  // useEffect(() => {
+  //   if (changedNode) {
+  //     setNodes((prev) => newNodes(prev as initialNodeType[], changedNode, changedNode.data));
+  //     console.log('useEffect', changedNode);
+  //   }
+  // }, [changedNode]);
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>

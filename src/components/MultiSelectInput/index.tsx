@@ -17,6 +17,7 @@ function MultiSelectInput({
 }: MultiSelectInputPropsType) {
   const handleSelectChange = (selectedValues: readonly NodeData[]) => {
     const selectedOpts = selectedValues as NodeData[];
+    console.log('handleSelectChange', selectedOpts);
     onChange(selectedOpts);
   };
 

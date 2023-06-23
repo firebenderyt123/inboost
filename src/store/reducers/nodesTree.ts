@@ -3,15 +3,15 @@ import { NodesTreeActions } from '../actions/nodesTree';
 import { Node } from '../../types/Node';
 
 interface NodesTreeInterface {
-  nodes: Node[];
-  lastChangedNode: Node | null;
+  rootNode: Node | null;
+  changedNode: Node | null;
 }
 
 export type NodesTreeState = NodesTreeInterface;
 
 const initialState: NodesTreeState = {
-  nodes: [],
-  lastChangedNode: null,
+  rootNode: null,
+  changedNode: null,
 };
 
 export default function nodesTreeReducer(
@@ -23,10 +23,42 @@ export default function nodesTreeReducer(
       return state;
     }
     case UPDATE_NODES_TREE: {
+      const rootNode = state.rootNode;
+
+      if (rootNode === null) {
+        return {
+          ...state,
+          rootNode: action.node,
+          changedNode: action.node,
+        };
+      }
+
+      const updateNode = (node: Node, newNode: Node): Node => {
+        if (node.id === newNode.id) {
+          console.log('update', node, newNode);
+          return {
+            ...node,
+            data: newNode.data,
+          };
+        } else if (node.child === null) {
+          newNode.parent = node;
+          return {
+            ...node,
+            child: newNode,
+          };
+        } else {
+          return {
+            ...node,
+            child: updateNode(node.child, newNode),
+          };
+        }
+      };
+
+      const newRootNode = updateNode(rootNode, action.node);
       return {
         ...state,
-        nodes: [...state.nodes.filter((node) => node.id !== action.node.id), action.node],
-        lastChangedNode: action.node,
+        rootNode: newRootNode,
+        changedNode: action.node,
       };
     }
     default:
