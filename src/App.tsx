@@ -11,10 +11,7 @@ import 'reactflow/dist/style.css';
 
 import Node from './components/Node';
 import { Node as NodeType } from './types/Node';
-import { NodeData } from './types/NodeData';
-
-import { useAppSelector } from './hooks/redux';
-import { selectChangedNode, selectRootNode } from './store/selectors/nodesTree';
+import useSessionStorage from './hooks/sessionStorage';
 
 const INIT_TOTAL_NODES = 4;
 
@@ -52,41 +49,21 @@ const initialEdges = Array.from({ length: INIT_TOTAL_NODES - 1 }, (_, index) => 
   target: `n${index + 2}`,
 }));
 
-/// ???????
-// const newNodes = (
-//   nodes: initialNodeType[],
-//   changedNode: NodeType,
-//   parentData: NodeData[],
-// ): initialNodeType[] => {
-//   const node = nodes.find((n) => n.id === changedNode.id);
-//   if (!node) return nodes;
-//   const newData = [...parentData, ...node.data.data];
-//   const uniqueData = Array.from(
-//     newData
-//       .reduce((map, obj) => {
-//         map.set(obj.label, obj);
-//         return map;
-//       }, new Map())
-//       .values(),
-//   );
-//   node.data.data = [...uniqueData];
-//   console.log('newNodes', parentData, changedNode, nodes);
-//   return node.data.child ? newNodes(nodes, node.data.child, node.data.data) : nodes;
-// };
-
 export default function App() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [storageNodes, setStorageNodes] = useSessionStorage('nodes', []);
+  const [storageEdges, setStorageEdges] = useSessionStorage('edges', []);
 
-  const rootNode = useAppSelector(selectRootNode);
-  const changedNode = useAppSelector(selectChangedNode);
-
-  // useEffect(() => {
-  //   if (changedNode) {
-  //     setNodes((prev) => newNodes(prev as initialNodeType[], changedNode, changedNode.data));
-  //     console.log('useEffect', changedNode);
-  //   }
-  // }, [changedNode]);
+  useEffect(() => {
+    if (nodes.length) {
+      setStorageNodes(nodes);
+      setStorageEdges(edges);
+    } else {
+      setNodes(storageNodes.length ? storageNodes : initialNodes);
+      setEdges(storageEdges.length ? storageEdges : initialEdges);
+    }
+  }, [nodes]);
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>

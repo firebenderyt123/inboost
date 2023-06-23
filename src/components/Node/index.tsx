@@ -8,24 +8,14 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { selectRootNode, selectChangedNode } from '../../store/selectors/nodesTree';
 import { updateNodesTree } from '../../services/nodesTree';
 
+import { getNode, getParentValues } from '../../utils/nodesTree';
+
 import './styles.css';
 
 const TOTAL_OPTIONS = 6;
 
 type NodePropsType = {
   data: NodeType;
-};
-
-const getNode = (rootNode: NodeType, id: string): NodeType | null => {
-  if (rootNode.id === id) return rootNode;
-  return rootNode.child ? getNode(rootNode.child, id) : null;
-};
-
-const getParentValues = (currentNode: NodeType, changedNode: NodeType): NodeData[] => {
-  if (currentNode.id === changedNode.id) return [...changedNode.data];
-  return currentNode.parent
-    ? [...getParentValues(currentNode.parent, changedNode), ...currentNode.data]
-    : [];
 };
 
 function Node({ data: nodeData }: NodePropsType) {
