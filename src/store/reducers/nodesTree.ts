@@ -40,7 +40,6 @@ export default function nodesTreeReducer(
             data: newNode.data,
           };
         } else if (node.child === null) {
-          newNode.parent = node;
           return {
             ...node,
             child: newNode,

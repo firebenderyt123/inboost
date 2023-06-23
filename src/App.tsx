@@ -35,7 +35,6 @@ const initialNodes: initialNodeType[] = Array.from({ length: INIT_TOTAL_NODES },
     position: { x: 200 * index, y: 100 * index },
     data: {
       id: `n${index + 1}`,
-      parent: null,
       data: [],
       child: null,
     },
