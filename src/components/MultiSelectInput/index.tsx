@@ -6,6 +6,7 @@ type MultiSelectInputPropsType = {
   closeMenuOnSelect?: boolean;
   options: NodeData[];
   onChange: (selectedOpts: NodeData[]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 };
 
